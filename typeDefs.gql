@@ -1,0 +1,241 @@
+type User {
+    _id: ID
+    email: String! @unique
+    first_name: String!
+    last_name: String!
+    password: String!
+    profile_pic: String
+    join_datetime: String!
+    user_address: Address
+    is_company: Boolean!
+    tax_number: String
+    company_name: String
+    company_seat: BusinessSeat
+    card_details: CardDetails
+    lists: [Lists]
+    live_feed: [LiveFeed]
+}
+
+type CardDetails {
+    _id: ID
+    name_on_card: String!
+    card_number: String!
+    expiry: String!
+    ccv: String!
+    userID: User!
+}
+
+type Address {
+    _id: ID
+    country: String!
+    city: String!
+    ZIP: String!
+    street: String!
+    housenumber: String!
+    userID: User!
+}
+
+type BusinessSeat {
+    _id: ID
+    country: String!
+    city: String!
+    ZIP: String!
+    street: String!
+    housenumber: String!
+    userID: User!
+}
+
+type Lists {
+    _id: ID
+    name_list: [Entry]
+    order_date: String!
+    order_quantity: String!
+    network_id: String!
+    userID: User!
+}
+
+type Entry {
+    _id: ID
+    client_name: String!
+    client_pic: String
+    client_phone: String!
+    client_city: String
+    client_email: String
+    status: String!
+    recall_time: String
+    acquire_datetime: String!
+    own_notes: String
+    feedback: String
+    listID: Lists!
+}
+
+type LiveFeed {
+    _id: ID
+    client_name: String!
+    email: String
+    phone: String
+    city: String
+    image: String
+    client_level: String!
+    started_at: String!
+    last_touch: String!
+    network_id: String!
+    userID: User!
+}
+
+type Token {
+    token: String!
+}
+
+type Plan {
+    _id: ID
+    plan_name: String!
+    plan_description: String!
+    plan_price: String!
+}
+
+type Network {
+    _id: ID
+    name: String!
+    id: String!
+    price: String!
+    payoff: String!
+    description: String!
+    image: String!
+    plans: [Plan]
+}
+
+type Networks {
+    _id: ID
+    networks_name: [Network]
+}
+
+type Query {
+    getUser(email: String!): User
+
+    getAddress: [Address]
+
+    getCurrentUser: User
+
+    getFeed: [LiveFeed]
+
+    getPlans: [Plan]
+
+    getNetworks(
+        id: String!
+    ): Networks
+}
+
+type Mutation {
+    setEntryStatus(
+        entryID: ID!
+        newStatus: String!
+    ): Entry
+
+    addNetworkContainer(
+        id: String!,
+        name: String!
+    ): Networks
+
+    addNetwork(
+        networksID: String!
+        name: String!
+        id: String!
+        price: String!
+        payoff: String!
+        image: String!
+        description: String!
+    ): Networks
+
+    addAddress(
+        country: String!, 
+        city: String!, 
+        ZIP: String!, 
+        street: String!, 
+        housenumber: String!,
+        userID: ID!
+    ): Address!
+
+    addCard(
+        name_on_card: String!, 
+        card_number: String!, 
+        expiry: String!, 
+        ccv: String!, 
+        userID: ID!
+    ): Address!
+
+    addBusinessSeat(
+        country: String!, 
+        city: String!, 
+        ZIP: String!, 
+        street: String!, 
+        housenumber: String!,
+        userID: ID!
+    ): BusinessSeat!
+
+    signinUser(
+        email: String!
+        password: String!
+    ): Token
+
+    signupUser(
+        email: String!, 
+        first_name: String!, 
+        last_name: String!, 
+        password: String!, 
+        profile_pic: String!,
+        is_company: Boolean!, 
+        tax_number: String,
+        company_name: String,
+    ): Token
+
+    addEntry(
+        client_name: String!,
+        client_phone: String!,
+        client_pic: String,
+        client_city: String!,
+        client_email: String,
+        network_id: String!
+    ): Entry
+
+    addList(
+        userID: ID!,
+        order_quantity: String!,
+        network_id: String!
+    ): Lists!
+
+    addToLiveFeed(
+        client_name: String!,
+        email: String,
+        phone: String,
+        city: String,
+        image: String,
+        network_id: String!,
+    ): LiveFeed!
+
+    changeLastTouch(
+        clientID: ID!
+    ): LiveFeed!
+
+    changeClientLevel(
+        clientID: ID!
+        new_level: String!
+    ): LiveFeed!
+
+    lostTouch(
+        clientID: ID!
+    ): LiveFeed!
+
+    addPlan(
+        plan_name: String!
+        plan_description: String!
+        plan_price: String!
+    ): Plan
+}
+
+type Subscription {
+    
+    getUserSub: User
+
+    getLiveFeed: [LiveFeed]
+}
